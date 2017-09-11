@@ -10,6 +10,7 @@ const channel = new sseChannel();
 
 subscribe.on('message', msg => {
     msg.ack();
+
     channel.send(msg.data.toString('utf8'));
 });
 
