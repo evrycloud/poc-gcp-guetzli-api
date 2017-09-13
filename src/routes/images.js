@@ -7,35 +7,47 @@ const storage = Storage();
 
 module.exports = {
     upload: upload(async (req, res) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+
         const {
             files
         } = req;
 
-        if (!files) {
+        const images = Array.isArray(files.images) ? files.images : [files.images];
+
+        if (!images.length) {
             return send(res, 400, 'No file found.');
         }
 
         // mimetype is not reliable.
-        if (['image/jpeg', 'image/png'].indexOf(files.image.mimetype) === -1) {
-            return send(res, 415, 'Unsupported file format')
-        }
+        for (i = 0; i < images.length; i++) {
+            const image = images[i];
 
-        const path = `/tmp/${files.image.name}`;
+            if (
+                ['image/jpeg', 'image/png'].indexOf(image.mimetype) === -1
+            ) {
+                return send(res, 415, 'Unsupported file format');
+            }
 
-        try {
-            await move(files.image, path);
+            const path = `/tmp/${image.name}`;
 
-            await storage.bucket(config.get('storage.uncompressed')).upload(path);
-        } catch (error) {
-            console.error(error);
+            try {
+                await move(image, path);
 
-            return send(res, 503, 'We had issues with your upload.');
+                await storage.bucket(config.get('storage.uncompressed')).upload(path);
+            } catch (error) {
+                console.error(error);
+
+                return send(res, 503, 'We had issues with your upload.');
+            }
         }
 
         return send(res, 200, 'Image successfully uploaded.');
     }),
 
     list: async (req, res) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+
         const files = await storage.bucket(config.get('storage.compressed')).getFiles();
 
         if (!files.length) {
