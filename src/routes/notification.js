@@ -6,7 +6,9 @@ const pubsub = PubSub({ projectId: config.get('project.id') });
 
 const subscribe = pubsub.subscription(config.get('pubsub.subscription'));
 
-const channel = new sseChannel();
+const channel = new sseChannel({
+    cors: { origins: '*' }
+});
 
 subscribe.on('message', msg => {
     msg.ack();
@@ -14,4 +16,8 @@ subscribe.on('message', msg => {
     channel.send(msg.data.toString('utf8'));
 });
 
-module.exports = (req, res) => channel.addClient(req, res);
+module.exports = (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    return channel.addClient(req, res);
+}
