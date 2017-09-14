@@ -1,3 +1,5 @@
+require('@google-cloud/trace-agent').start();
+
 const micro = require('micro');
 const { send } = require('micro');
 const { router, get, post } = require('microrouter');

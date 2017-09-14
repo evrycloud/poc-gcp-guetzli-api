@@ -12,6 +12,7 @@
   "dependencies": {
     "@google-cloud/pubsub": "^0.14.0",
     "@google-cloud/storage": "^1.2.1",
+    "@google-cloud/trace-agent": "^2.2.0",
     "config": "^1.26.2",
     "micro": "^8.0.4",
     "micro-upload": "^1.0.1",
