@@ -7,7 +7,7 @@ const { router, get, post } = require('microrouter');
 const notification = require('./routes/notification');
 const { list, upload } = require('./routes/images');
 
-const notfound = (req, res) => send(res, 404, 'Not found route');
+const notfound = (req, res) => send(res, 404, 'Route not found');
 
 module.exports = function startServer(port) {
     return micro(
